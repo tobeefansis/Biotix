@@ -9,12 +9,14 @@ using UnityEngine.Events;
 public class GameManager : Singletone<GameManager>
 {
 
-    public UnityEvent OnWin;
-    public UnityEvent OnLose;
-    public UnityEvent OnPause;
-    public UnityEvent OnResume;
-    public NodeGroup player;
-    public List<Node> AllNodes;
+    [SerializeField] UnityEvent OnWin;
+    [SerializeField] UnityEvent OnLose;
+    [SerializeField] UnityEvent OnPause;
+    [SerializeField] UnityEvent OnResume;
+    [SerializeField] NodeGroup player;
+    [SerializeField] List<Node> _AllNodes;
+
+    public List<Node> AllNodes { get => _AllNodes; set => _AllNodes = value; }
 
     public void Play() => StartCoroutine(GetAllPause(true));
 
@@ -32,6 +34,7 @@ public class GameManager : Singletone<GameManager>
 
     public void Win()
     {
+        print("///////WIN///////");
         OnWin.Invoke();
     }
 
@@ -49,6 +52,7 @@ public class GameManager : Singletone<GameManager>
 
     public void Lose()
     {
+        print("///////LOSE///////");
         OnLose.Invoke();
     }
 

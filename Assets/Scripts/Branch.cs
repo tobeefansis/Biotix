@@ -25,7 +25,7 @@ public class Branch : MonoBehaviour
         var posFrom = FromScreenToWorld(from.transform.position);
         var posTo = FromScreenToWorld(to.transform.position);
         time = Vector2.Distance(posFrom, posTo) / speed;
-        StartCoroutine(Translete());
+        StartCoroutine(Translete(time));
         visual.position = from.position;
         visual.DOMove(to.transform.position, time);
         
@@ -39,12 +39,12 @@ public class Branch : MonoBehaviour
         this.count = count;
     }
 
-    IEnumerator Translete()
+    IEnumerator Translete(float time)
     {
         yield return new WaitForSeconds(time);
-
+        print($"{from.name} to {to.name}");
         To.Add(Count, group);
-        Destroy(gameObject, 1);
+        Destroy(gameObject);
     }
     public Vector3 FromScreenToWorld(Vector3 pos)
     {

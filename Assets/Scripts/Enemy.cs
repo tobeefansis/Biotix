@@ -11,28 +11,30 @@ public class Enemy : NodeGroup
         Nearest,
         Weak
     }
-    public float time;
-    public Strategy strategy;
+
+    [SerializeField] float time;
+    [SerializeField] Strategy strategy;
     [SerializeField] Branch branchPrefub;
-    public Transform canvas;
+    [SerializeField] Transform canvas;
+
     // Use this for initialization
     void Start()
     {
-
         StartCoroutine(Attack());
     }
 
     IEnumerator Attack()
     {
+        yield return new WaitForSecondsRealtime(time);
         while (Nodes.Count > 0)
         {
-            yield return new WaitForSecondsRealtime(time);
-            List<Node> enemys = GameManager.Instance.AllNodes
+            List<Node> enemies = GameManager.Instance.AllNodes
                 .Where(n => n.Group != this)
                 .ToList();
 
-            if (enemys.Count == 0) break;
+            if (enemies.Count == 0) break;
             Nodes = Nodes.OrderBy(n => n.Count).Reverse().ToList();
+
             var max = Nodes.First();
 
             Node target = null;
@@ -41,10 +43,10 @@ public class Enemy : NodeGroup
                 case Strategy.Peaceful:
                     break;
                 case Strategy.Nearest:
-                    target = enemys.Min();
+                    target = enemies.Min();
                     break;
                 case Strategy.Weak:
-                    target = enemys.Select(
+                    target = enemies.Select(
                          n => new
                          {
                              target = n,
@@ -71,6 +73,7 @@ public class Enemy : NodeGroup
 
                 foreach (var item in SelectedNodes)
                 {
+                    if (item.Count == 0) continue;
                     var t = Instantiate(branchPrefub, canvas);
                     var value = item.Count / 2;
                     item.Count -= value;
@@ -79,7 +82,7 @@ public class Enemy : NodeGroup
                     t.Set(item.transform, this, target, value);
                 }
             }
-
+            yield return new WaitForSecondsRealtime(time);
         }
     }
 

@@ -16,6 +16,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
     [SerializeField] NodeGroup group;
     [SerializeField] Text countText;
     [SerializeField] Image image;
+    [SerializeField] UnityEvent<Color> OnStColor;
     [SerializeField] UnityEvent OnSelect;
     [SerializeField] UnityEvent OnDiselect;
     [SerializeField] LineRenderer lineRenderer;
@@ -33,7 +34,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
     public NodeGroup Group
     {
         get => group;
-        set
+        private set
         {
             if (group != null)
             {
@@ -44,12 +45,13 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
 
             if (group == null)
             {
-                image.color = Color.white;
+                OnStColor.Invoke(Color.white);
+                Diselect();
             }
             else
             {
                 group.AddNode(this);
-                image.color = group.GroupColor;
+                OnStColor.Invoke(group.GroupColor);
             }
         }
     }
@@ -93,12 +95,13 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
         ChangeCount();
         if (group == null)
         {
-            image.color = Color.white;
+            OnStColor.Invoke(Color.white);
         }
         else
         {
             group.AddNode(this);
-            image.color = group.GroupColor;
+            OnStColor.Invoke(group.GroupColor);
+
         }
     }
 
@@ -122,13 +125,15 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
 
     public void Add(int count, NodeGroup group)
     {
-        var t = Count;
+
+
         if (Group == group)
         {
             Count += count;
         }
         else
         {
+            print($"{group} {Group}");
             Count -= count;
             if (Count < 0)
             {
@@ -156,6 +161,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
 
     public void Diselect()
     {
+
         isSelect = false;
         lineRenderer.enabled = false;
         OnDiselect.Invoke();
