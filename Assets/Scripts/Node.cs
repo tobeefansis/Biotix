@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Mathematics;
@@ -8,15 +9,18 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] int count;
+    [SerializeField] int MaxCount;
     [SerializeField] NodeGroup group;
     [SerializeField] Text countText;
     [SerializeField] Image image;
+    [SerializeField] UnityEvent<Color> OnStColor;
     [SerializeField] UnityEvent OnSelect;
     [SerializeField] UnityEvent OnDiselect;
     [SerializeField] LineRenderer lineRenderer;
+    public bool isSelect;
 
     public int Count
     {
@@ -30,16 +34,24 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     public NodeGroup Group
     {
         get => group;
-        set
+        private set
         {
+            if (group != null)
+            {
+
+                group.RemoveNode(this);
+            }
             group = value;
+
             if (group == null)
             {
-                image.color = Color.white;
+                OnStColor.Invoke(Color.white);
+                Diselect();
             }
             else
             {
-                image.color = group.GroupColor;
+                group.AddNode(this);
+                OnStColor.Invoke(group.GroupColor);
             }
         }
     }
@@ -55,7 +67,18 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         {
             if (group)
             {
-                Count++;
+                if (Count > MaxCount)
+                {
+                    Count--;
+                }
+                if (Count < MaxCount)
+                {
+                    Count++;
+                }
+                if (true)
+                {
+
+                }
                 yield return new WaitForSeconds(1f / group.Speed);
             }
             else
@@ -65,7 +88,6 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         }
     }
 
-    public bool isSelect;
 
     void Start()
     {
@@ -73,11 +95,13 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         ChangeCount();
         if (group == null)
         {
-            image.color = Color.white;
+            OnStColor.Invoke(Color.white);
         }
         else
         {
-            image.color = group.GroupColor;
+            group.AddNode(this);
+            OnStColor.Invoke(group.GroupColor);
+
         }
     }
 
@@ -93,7 +117,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         if (isSelect)
         {
             var posFrom = FromScreenToWorld(transform.position);
-            var posTo = FromScreenToWorld(Swipe.Instate.CursorPosition);
+            var posTo = FromScreenToWorld(Swipe.Instance.CursorPosition);
             lineRenderer.SetPosition(0, posFrom);
             lineRenderer.SetPosition(1, posTo);
         }
@@ -101,13 +125,15 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void Add(int count, NodeGroup group)
     {
-        var t = Count;
+
+
         if (Group == group)
         {
             Count += count;
         }
         else
         {
+            print($"{group} {Group}");
             Count -= count;
             if (Count < 0)
             {
@@ -119,7 +145,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
                 Group = null;
             }
         }
-        print($"{gameObject.name } change from{t} to {Count}  --- {count - Count}");
+
     }
 
     public void Select()
@@ -135,6 +161,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void Diselect()
     {
+
         isSelect = false;
         lineRenderer.enabled = false;
         OnDiselect.Invoke();
@@ -142,48 +169,54 @@ public class Node : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (Swipe.Instate.IsSwiper)
+        if (Swipe.Instance.IsSwiper)
         {
-            if (Swipe.Instate.Group == Group)
+            if (Swipe.Instance.Group == Group)
             {
-                if (Swipe.Instate.AddNode(this))
+                if (Swipe.Instance.AddNode(this))
                 {
                     Select();
-                    Swipe.Instate.OnComplite.AddListener(Diselect);
+                    Swipe.Instance.OnComplite.AddListener(Diselect);
                 }
             }
-            Swipe.Instate.SelectNode = this;
+            Swipe.Instance.SelectNode = this;
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (Swipe.Instate.SelectNode == this)
+        if (Swipe.Instance.SelectNode == this)
         {
-            Swipe.Instate.SelectNode = null;
+            Swipe.Instance.SelectNode = null;
         }
     }
 
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (Swipe.Instate.Group == Group)
+        if (Swipe.Instance.Group == Group)
         {
-            if (Swipe.Instate.AddNode(this))
+            if (Swipe.Instance.AddNode(this))
             {
                 SelectWhitOutLine();
-                Swipe.Instate.OnComplite.AddListener(Diselect);
+                Swipe.Instance.OnComplite.AddListener(Diselect);
             }
             else
             {
-                Swipe.Instate.SelectNode = this;
-                Swipe.Instate.Complite();
+                Swipe.Instance.SelectNode = this;
+                Swipe.Instance.Complite();
             }
         }
         else
         {
-            Swipe.Instate.SelectNode = this;
-            Swipe.Instate.Complite();
+            Swipe.Instance.SelectNode = this;
+            Swipe.Instance.Complite();
         }
+    }
+
+    public int CompareTo(Node other)
+    {
+        return Count.CompareTo(other.Count);
+
     }
 }

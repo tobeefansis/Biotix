@@ -3,13 +3,13 @@ using System.Collections;
 
 public class Singletone<T> : MonoBehaviour where T : Component
 {
-    public static T Instate { get; private set; }
+    public static T Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instate == null)
+        if (Instance == null)
         {
-            Instate = this as T;
+            Instance = this as T;
         }
         else
         {
