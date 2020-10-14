@@ -11,7 +11,6 @@ public class Branch : MonoBehaviour
     [SerializeField] Transform visual;
     [SerializeField] Node to;
     [SerializeField] int count;
-    [SerializeField] LineRenderer lineRenderer;
     [SerializeField] [Range(0, 5)] float speed;
 
     float time;
@@ -25,12 +24,11 @@ public class Branch : MonoBehaviour
     {
         var posFrom = FromScreenToWorld(from.transform.position);
         var posTo = FromScreenToWorld(to.transform.position);
-        lineRenderer.SetPosition(0, posFrom);
-        lineRenderer.SetPosition(1, posTo);
-        time = Vector2.Distance(posFrom, posTo) * speed;
+        time = Vector2.Distance(posFrom, posTo) / speed;
         StartCoroutine(Translete());
         visual.position = from.position;
         visual.DOMove(to.transform.position, time);
+        
     }
 
     public void Set(Transform from, NodeGroup group, Node to, int count)

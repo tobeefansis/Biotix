@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts
+public class Singletone<T> : MonoBehaviour where T : Component
 {
-    public class Singletone<T> : MonoBehaviour where T : Component
-    {
-        public static T Instate { get; private set; }
+    public static T Instance { get; private set; }
 
-        private void Awake()
+    private void Awake()
+    {
+        if (Instance == null)
         {
-            if (Instate == null)
-            {
-                Instate = this as T;
-            }
-            else
-            {
-                Destroy(this);
-            }
+            Instance = this as T;
+        }
+        else
+        {
+            Destroy(this);
         }
     }
 }

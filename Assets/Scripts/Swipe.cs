@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using Assets.Scripts;
 using UnityEngine.Events;
 using System;
 
@@ -15,14 +14,16 @@ public class Swipe : Singletone<Swipe>, IDragHandler, IBeginDragHandler, IEndDra
     [SerializeField] bool isSwiper;
     [SerializeField] Branch branchPrefub;
 
+    public UnityEvent OnComplite;
+    public UnityEvent OnCreateBranch;
+    public Transform canvas;
     public Node SelectNode;
 
     public List<Node> Nodes { get => nodes; set => nodes = value; }
     public NodeGroup Group { get => group; set => group = value; }
     public bool IsSwiper { get => isSwiper; set => isSwiper = value; }
     public Vector3 CursorPosition => cursor.position;
-    public UnityEvent OnComplite;
-    public Transform canvas;
+
 
     // Use this for initialization
     void Start()
@@ -62,6 +63,7 @@ public class Swipe : Singletone<Swipe>, IDragHandler, IBeginDragHandler, IEndDra
     {
         if (SelectNode)
         {
+            OnCreateBranch.Invoke();
             CreateBranchs();
         }
         Nodes.Clear();
@@ -78,8 +80,8 @@ public class Swipe : Singletone<Swipe>, IDragHandler, IBeginDragHandler, IEndDra
             var t = Instantiate(branchPrefub, canvas);
             var value = item.Count / 2;
             item.Count -= value;
-        
-            
+
+
             t.Set(item.transform, Group, SelectNode, value);
         }
     }
