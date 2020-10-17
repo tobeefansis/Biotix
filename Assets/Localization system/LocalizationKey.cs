@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,12 +11,12 @@ public class LocalizationKey : MonoBehaviour
     [SerializeField] string key;
     void Start()
     {
-        LocalizationSystem.Instate.OnReloadLocalization.AddListener(Reload);
+        LocalizationSystem.Instance.OnReloadLocalization.AddListener(Reload);
         Reload();
     }
 
     private void Reload()
     {
-        text.text = LocalizationSystem.Instate.GetText(key);
+        text.text = LocalizationSystem.Instance.GetText(key);
     }
 }

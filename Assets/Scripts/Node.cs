@@ -9,7 +9,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class Node : JsonObject, IComparable<Node>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] int count;
     [SerializeField] int MaxCount;
@@ -20,6 +20,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
     [SerializeField] UnityEvent OnSelect;
     [SerializeField] UnityEvent OnDiselect;
     [SerializeField] LineRenderer lineRenderer;
+
     public bool isSelect;
 
     public int Count
@@ -31,6 +32,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
             ChangeCount();
         }
     }
+
     public NodeGroup Group
     {
         get => group;
@@ -56,9 +58,12 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
         }
     }
 
+
+
     public void ChangeCount()
     {
         countText.text = Count.ToString();
+
     }
 
     IEnumerator Increment()
@@ -87,7 +92,6 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
             }
         }
     }
-
 
     void Start()
     {
@@ -153,6 +157,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
         lineRenderer.enabled = true;
         SelectWhitOutLine();
     }
+
     public void SelectWhitOutLine()
     {
         isSelect = true;
@@ -190,7 +195,6 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
             Swipe.Instance.SelectNode = null;
         }
     }
-
 
     public void OnPointerClick(PointerEventData eventData)
     {

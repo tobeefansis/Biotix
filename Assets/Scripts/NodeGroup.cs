@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
 
-public class NodeGroup : MonoBehaviour
+public class NodeGroup : JsonObject
 {
     [SerializeField] Color groupColor;
     [SerializeField] [Range(0, 2)] float speed;
@@ -12,8 +12,8 @@ public class NodeGroup : MonoBehaviour
     [SerializeField] UnityEvent OnLastGroup;
     [SerializeField] UnityEvent OnEmpty;
 
-    public Color GroupColor { get => groupColor; set => groupColor = value; }
-    public float Speed { get => speed; set => speed = value; }
+    public Color GroupColor => groupColor;
+    public float Speed => speed;
 
     public void AddNode(Node node)
     {
@@ -24,6 +24,7 @@ public class NodeGroup : MonoBehaviour
             GameManager.Instance.WinThisGroup(this);
         }
     }
+
     public void RemoveNode(Node node)
     {
         Nodes.Remove(node);
@@ -32,5 +33,4 @@ public class NodeGroup : MonoBehaviour
             OnEmpty.Invoke();
         }
     }
-   
 }
