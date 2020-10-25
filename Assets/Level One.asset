@@ -20,4 +20,4 @@ MonoBehaviour:
   - '{"position":{"x":1577.0,"y":786.0,"z":0.0},"Count":23,"MaxCount":23}'
   enemys:
   - '{"position":{"x":-310.0,"y":-180.0,"z":0.0},"groupColor":{"r":1.0,"g":0.0,"b":0.0,"a":1.0},"speed":0.6200000047683716,"Nodes":[{"position":{"x":1727.0,"y":540.0,"z":0.0},"Count":23,"MaxCount":23}],"strategy":2}'
-  player: '{"position":{"x":1170.0,"y":540.0,"z":0.0},"groupColor":{"r":1.0,"g":0.8955005407333374,"b":0.0,"a":1.0},"speed":0.32499998807907107,"Nodes":[{"position":{"x":805.0,"y":562.0,"z":0.0},"Count":23,"MaxCount":23}]}'
+  player: '{"position":{"x":1170.0,"y":540.0,"z":0.0},"groupColor":{"r":1.0,"g":0.8955005407333374,"b":0.0,"a":1.0},"speed":0.92499998807907107,"Nodes":[{"position":{"x":805.0,"y":562.0,"z":0.0},"Count":23,"MaxCount":23}]}'

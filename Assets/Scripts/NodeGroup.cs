@@ -13,14 +13,16 @@ public class NodeGroup : MonoBehaviour
     [SerializeField] UnityEvent OnEmpty;
 
 
-    public  List<Node> Nodes { get => nodes; set => nodes = value; }
+    public List<Node> Nodes { get => nodes; set => nodes = value; }
     public float Speed { get => speed; set => speed = value; }
     public Color GroupColor { get => groupColor; set => groupColor = value; }
 
     public void AddNode(Node node)
     {
-        Nodes.Add(node);
-        var NotMineNodes = GameManager.Instance.AllNodes.Where(n => n.Group != this).ToList();
+        if (!Nodes.Contains(node)) Nodes.Add(node);
+        var NotMineNodes = GameManager.Instance.AllNodes
+            .Where(n => n.Group != this && n.Group != null)
+            .ToList();
         if (NotMineNodes.Count == 0)
         {
             GameManager.Instance.WinThisGroup(this);
@@ -33,6 +35,7 @@ public class NodeGroup : MonoBehaviour
         if (Nodes.Count == 0)
         {
             OnEmpty.Invoke();
+            Destroy(this.gameObject);
         }
     }
 }

@@ -76,6 +76,7 @@ public class Swipe : Singletone<Swipe>, IDragHandler, IBeginDragHandler, IEndDra
     {
         foreach (var item in nodes)
         {
+            if (item.Group != Group) continue;
             if (item.Count == 0) continue;
             if (item == SelectNode) continue;
             var t = Instantiate(branchPrefub, canvas);

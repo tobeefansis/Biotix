@@ -9,6 +9,9 @@ public class LocalizationKey : MonoBehaviour
 {
     [SerializeField] Text text;
     [SerializeField] string key;
+
+    public string Key { get => key; set => key = value; }
+
     void Start()
     {
         LocalizationSystem.Instance.OnReloadLocalization.AddListener(Reload);

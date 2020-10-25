@@ -18,9 +18,9 @@ namespace IJunior.TypedScenes
         
         private const string GUID = "a54dfb119218ff14f9f73a3101c8b6c1";
         
-        public static void Load(LoadSceneMode loadSceneMode = LoadSceneMode.Single)
+        public static void Load(GameManager.GameResult argument, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
         {
-            LoadScene(GUID, loadSceneMode);
+            LoadScene(GUID, loadSceneMode, argument);
         }
     }
 }

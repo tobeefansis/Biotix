@@ -15,27 +15,22 @@ public class MapController : Singletone<MapController>
     [SerializeField] Transform target;
     [SerializeField] Button ButtonPrefub;
     
-    public void OpenLevel(int id)
+    public void OpenLevel(Level level)
     {
-        Debug.LogError(id);
-        var level = AllLevel[id];
         Game.Load(level);
     }
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(this);
-    }
+    
     // Start is called before the first frame update
     void Start()
     {
-
+        DontDestroyOnLoad(this);
         levels = PlayerSettings.Instance.levelDatas;
         for (int i = 0; i < AllLevel.Count && i < levels.Count; i++)
         {
-            int index = i;
+            var level = AllLevel[i];
             var btn = Instantiate(ButtonPrefub, target);
-            btn.onClick.AddListener(()=>OpenLevel(index));
+            btn.onClick.AddListener(()=>OpenLevel(level));
             btn.GetComponentInChildren<Text>().text = (i + 1).ToString();
         }
     }

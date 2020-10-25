@@ -33,12 +33,6 @@ public class SceneLoader : MonoBehaviour
             case Scenes.Map:
                 Map.Load();
                 break;
-            case Scenes.Win:
-                Win.Load();
-                break;
-            case Scenes.Lose:
-                Lose.Load();
-                break;
             default:
                 break;
         }

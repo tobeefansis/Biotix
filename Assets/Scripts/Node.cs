@@ -28,49 +28,41 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
         set
         {
             count = value;
-            ChangeCount();
+            countText.text = Count.ToString();
         }
     }
 
-    internal NodeGroup GroupWithoutnNotification { get => group; set => group = value; }
     public NodeGroup Group
     {
         get => group;
         set
         {
-            if (group != null)
+            if (value != group)
             {
-
-                group.RemoveNode(this);
-            }
-            group = value;
-
-            if (group == null)
-            {
-                OnStColor.Invoke(Color.white);
-                Diselect();
-            }
-            else
-            {
-                group.AddNode(this);
-                OnStColor.Invoke(group.GroupColor);
+                group?.RemoveNode(this);
+                group = value;
+                if (group == null)
+                {
+                    OnStColor.Invoke(Color.white);
+                }
+                else
+                {
+                    group.AddNode(this);
+                    OnStColor.Invoke(group.GroupColor);
+                    Diselect();
+                }
             }
         }
     }
 
     public int MaxCount { get => maxCount; set => maxCount = value; }
 
-    public void ChangeCount()
-    {
-        countText.text = Count.ToString();
-
-    }
 
     IEnumerator Increment()
     {
         while (true)
         {
-            if (group)
+            if (Group)
             {
                 if (Count > MaxCount)
                 {
@@ -80,11 +72,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
                 {
                     Count++;
                 }
-                if (true)
-                {
-
-                }
-                yield return new WaitForSeconds(1f / group.Speed);
+                yield return new WaitForSeconds(1f / Group.Speed);
             }
             else
             {
@@ -96,8 +84,8 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
     void Start()
     {
         StartCoroutine(Increment());
-        ChangeCount();
-        if (group == null)
+
+        if (Group == null)
         {
             OnStColor.Invoke(Color.white);
         }
@@ -129,15 +117,12 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
 
     public void Add(int count, NodeGroup group)
     {
-
-
         if (Group == group)
         {
             Count += count;
         }
         else
         {
-            print($"{group} {Group}");
             Count -= count;
             if (Count < 0)
             {
@@ -155,6 +140,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
     public void Select()
     {
         lineRenderer.enabled = true;
+        OnSelect.Invoke();
         SelectWhitOutLine();
     }
 
@@ -166,10 +152,15 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
 
     public void Diselect()
     {
-
+        print(name);
         isSelect = false;
         lineRenderer.enabled = false;
         OnDiselect.Invoke();
+    }
+
+    public void Send()
+    {
+        print(name);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

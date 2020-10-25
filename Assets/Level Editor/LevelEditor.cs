@@ -135,8 +135,8 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
                 var node = Instantiate(NodePrefub, nodedate.position, Quaternion.identity, Nodes);
                 node.MaxCount = 100;
                 node.Count = nodedate.Count;
-                node.GroupWithoutnNotification = enemy;
-                enemy.Nodes.Add(node);
+                node.Group= enemy;
+                enemy.AddNode(node);
             }
         }
     }
@@ -166,8 +166,8 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
             var node = Instantiate(NodePrefub, nodedate.position, Quaternion.identity, Nodes);
             node.MaxCount = nodedate.MaxCount;
             node.Count = nodedate.Count;
-            node.GroupWithoutnNotification = playerGroup;
-            playerGroup.Nodes.Add(node);
+            node.Group = playerGroup;
+            playerGroup.AddNode(node);
         }
     }
 
