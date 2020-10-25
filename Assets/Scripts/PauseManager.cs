@@ -1,18 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Events;
 
-public class PauseManager : MonoBehaviour
+public class PauseManager : Singletone<PauseManager>
 {
-
-    // Use this for initialization
-    void Start()
+    [SerializeField] List<IPause> PauseObjects = new List<IPause>();
+    [SerializeField] UnityEvent OnPause;
+    [SerializeField] UnityEvent OnResume;
+    private void Start()
     {
-
+        Time.timeScale = 1;
+        PauseObjects = FindObjectsOfType<GameObject>()
+            .Select(n => n.GetComponent<IPause>())
+            .Where(n => n != null)
+            .ToList();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Pause()
     {
+        PauseObjects.ForEach(n => n.Pause());
+        OnPause.Invoke();
+        Time.timeScale = 0;
+    }
 
+    public void Resume()
+    {
+        PauseObjects.ForEach(n => n.Resume());
+        OnResume.Invoke();
+        Time.timeScale = 1;
     }
 }

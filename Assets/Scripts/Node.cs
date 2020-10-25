@@ -9,13 +9,12 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Node : JsonObject, IComparable<Node>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] int count;
-    [SerializeField] int MaxCount;
+    [SerializeField] int maxCount;
     [SerializeField] NodeGroup group;
     [SerializeField] Text countText;
-    [SerializeField] Image image;
     [SerializeField] UnityEvent<Color> OnStColor;
     [SerializeField] UnityEvent OnSelect;
     [SerializeField] UnityEvent OnDiselect;
@@ -33,10 +32,11 @@ public class Node : JsonObject, IComparable<Node>, IPointerEnterHandler, IPointe
         }
     }
 
+    internal NodeGroup GroupWithoutnNotification { get => group; set => group = value; }
     public NodeGroup Group
     {
         get => group;
-        private set
+        set
         {
             if (group != null)
             {
@@ -58,7 +58,7 @@ public class Node : JsonObject, IComparable<Node>, IPointerEnterHandler, IPointe
         }
     }
 
-
+    public int MaxCount { get => maxCount; set => maxCount = value; }
 
     public void ChangeCount()
     {

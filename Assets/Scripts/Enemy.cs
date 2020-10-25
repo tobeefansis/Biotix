@@ -17,6 +17,16 @@ public class Enemy : NodeGroup
     [SerializeField] Branch branchPrefub;
     [SerializeField] Transform canvas;
 
+    public Strategy GetStrategy()
+    {
+        return strategy;
+    }
+
+    public void SetStrategy(Strategy value)
+    {
+        strategy = value;
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -38,7 +48,7 @@ public class Enemy : NodeGroup
             var max = Nodes.First();
 
             Node target = null;
-            switch (strategy)
+            switch (GetStrategy())
             {
                 case Strategy.Peaceful:
                     break;

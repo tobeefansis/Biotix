@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
 
-public class NodeGroup : JsonObject
+public class NodeGroup : MonoBehaviour
 {
     [SerializeField] Color groupColor;
     [SerializeField] [Range(0, 2)] float speed;
-    [SerializeField] protected List<Node> Nodes = new List<Node>();
+    [SerializeField] protected List<Node> nodes = new List<Node>();
     [SerializeField] UnityEvent OnLastGroup;
     [SerializeField] UnityEvent OnEmpty;
 
-    public Color GroupColor => groupColor;
-    public float Speed => speed;
+
+    public  List<Node> Nodes { get => nodes; set => nodes = value; }
+    public float Speed { get => speed; set => speed = value; }
+    public Color GroupColor { get => groupColor; set => groupColor = value; }
 
     public void AddNode(Node node)
     {

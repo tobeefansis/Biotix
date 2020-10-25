@@ -8,12 +8,12 @@ public class Branch : MonoBehaviour
 {
     [SerializeField] Transform from;
     [SerializeField] NodeGroup group;
-    [SerializeField] Transform visual;
+    [SerializeField] ParticleSystem visual;
     [SerializeField] Node to;
     [SerializeField] int count;
     [SerializeField] [Range(0, 5)] float speed;
 
-    float time;
+    [SerializeField] float time;
 
     public Transform From { get => from; set => from = value; }
     public Node To { get => to; set => to = value; }
@@ -22,12 +22,15 @@ public class Branch : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var posFrom = FromScreenToWorld(from.transform.position);
+
+        
+        var posFrom = FromScreenToWorld(from.position);
         var posTo = FromScreenToWorld(to.transform.position);
         time = Vector2.Distance(posFrom, posTo) / speed;
         StartCoroutine(Translete(time));
-        visual.position = from.position;
-        visual.DOMove(to.transform.position, time);
+        visual.transform.position = posFrom;
+        visual.maxParticles = count;
+        visual.transform.DOMove(posTo, time);
         
     }
 
@@ -44,7 +47,7 @@ public class Branch : MonoBehaviour
         yield return new WaitForSeconds(time);
         print($"{from.name} to {to.name}");
         To.Add(Count, group);
-        Destroy(gameObject);
+        Destroy(gameObject,3);
     }
     public Vector3 FromScreenToWorld(Vector3 pos)
     {

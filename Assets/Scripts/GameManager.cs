@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using UnityEngine.Advertisements;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +17,7 @@ public class GameManager : Singletone<GameManager>
     [SerializeField] List<Node> _AllNodes;
 
     public List<Node> AllNodes { get => _AllNodes; set => _AllNodes = value; }
+    public NodeGroup Player { get => player; set => player = value; }
 
     public void Play() => StartCoroutine(GetAllPause(true));
 
@@ -40,7 +41,7 @@ public class GameManager : Singletone<GameManager>
 
     public void WinThisGroup(NodeGroup nodeGroup)
     {
-        if (nodeGroup == player)
+        if (nodeGroup == Player)
         {
             Win();
         }
@@ -53,6 +54,10 @@ public class GameManager : Singletone<GameManager>
     public void Lose()
     {
         print("///////LOSE///////");
+        if (Advertisement.IsReady())
+        {
+            Advertisement.Show("video");
+        }
         OnLose.Invoke();
     }
 
@@ -61,6 +66,10 @@ public class GameManager : Singletone<GameManager>
     {
         AllNodes = FindObjectsOfType<Node>().ToList();
 
+        if (Advertisement.isSupported)
+        {
+            Advertisement.Initialize("3874383", false);
+        }
     }
 
     // Update is called once per frame
