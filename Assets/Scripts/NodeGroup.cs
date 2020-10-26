@@ -20,6 +20,7 @@ public class NodeGroup : MonoBehaviour
     public void AddNode(Node node)
     {
         if (!Nodes.Contains(node)) Nodes.Add(node);
+        if (LevelEditor.Instance.IsAddeting) return;
         var NotMineNodes = GameManager.Instance.AllNodes
             .Where(n => n.Group != this && n.Group != null)
             .ToList();

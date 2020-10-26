@@ -6,8 +6,9 @@ using IJunior.TypedScenes;
 using UnityEditor;
 
 [RequireComponent(typeof(Swipe))]
-public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
+public class LevelEditor : Singletone<LevelEditor>, ISceneLoadHandler<Level>
 {
+    public bool IsAddeting { get; set; }
     public Level level { get; set; }
     [SerializeField] Transform Nodes;
     [SerializeField] Transform Player;
@@ -47,7 +48,7 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
             }
             return _enemies;
         }
-       // EditorUtility.SetDirty(level);
+        // EditorUtility.SetDirty(level);
     }
 
     private void SavePlayer()
@@ -98,15 +99,18 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
     }
     public void Clear()
     {
+        Awake();
 
         Clear(Nodes);
         Clear(Player);
         Clear(Enemies);
 
     }
-
+  
     public void Load()
     {
+        IsAddeting = true;
+        Awake();
         Clear(Nodes);
         Clear(Player);
         Clear(Enemies);
@@ -116,6 +120,7 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
         LoadEmptyNodes();
 
         LoadEnemies();
+        IsAddeting = false;
     }
 
     private void LoadEnemies()
@@ -173,6 +178,7 @@ public class LevelEditor : MonoBehaviour, ISceneLoadHandler<Level>
 
     public void OnSceneLoaded(Level argument)
     {
+        PlayerSettings.Instance.selectLevel= argument;
         Load(argument);
     }
 }

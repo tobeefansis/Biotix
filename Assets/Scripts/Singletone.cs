@@ -5,7 +5,7 @@ public class Singletone<T> : MonoBehaviour where T : Component
 {
     public static T Instance { get; private set; }
 
-    private void Awake()
+    public void Awake()
     {
         if (Instance == null)
         {
@@ -13,7 +13,10 @@ public class Singletone<T> : MonoBehaviour where T : Component
         }
         else
         {
+#if !UNITI_EDITOR
             Destroy(this);
+
+#endif
         }
     }
 }

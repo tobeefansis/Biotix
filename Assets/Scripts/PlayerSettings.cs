@@ -10,11 +10,17 @@ public class PlayerSettings : Singletone<PlayerSettings>
 {
     public string UserName;
     public float TimeInGame;
-    public DateTime LastVisit;
-    public List<LevelDate> levelDatas = new List<LevelDate>();
     public List<Level> levels = new List<Level>();
- 
 
+    bool IsAcceptLoad;
+   [SerializeField] Level _selectLevel;
+    public Level selectLevel { get => _selectLevel; set => _selectLevel = value; }
+    public int selectLevelIndex => levels.IndexOf(selectLevel);
+
+    public bool isLast
+    {
+        get => selectLevelIndex + 1 < levels.Count && levels[selectLevelIndex + 1].data == null;
+    }
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -28,20 +34,32 @@ public class PlayerSettings : Singletone<PlayerSettings>
 
     private void Accept(LoginResult obj)
     {
+        IsAcceptLoad = true;
         GetUserData(obj.PlayFabId);
     }
 
+
+    private void OnDestroy()
+    {
+        if (IsAcceptLoad)
+        {
+            Save();
+        }
+    }
     public void Save()
     {
-        string[] t = { "asd", "asd" };
-        print(JsonUtility.ToJson(t));
+        var levelDatas = levels
+            .Where(n => n.data != null)
+            .Select(n => n.data)
+            .ToArray();
+        TimeInGame += Time.time;
+
         SetUserData(
             new Dictionary<string, string>()
             {
                 {Constants.UserName, UserName },
                 {Constants.TimeInGame, TimeInGame.ToString() },
-                {Constants.LastVisit, LastVisit.Ticks.ToString() },
-                {Constants.Levels, JsonHelper.ToJson(levels.ToArray())}
+                {Constants.Levels, JsonHelper.ToJson(levelDatas)}
             }
             );
     }
@@ -89,13 +107,26 @@ public class PlayerSettings : Singletone<PlayerSettings>
         {
             TimeInGame = float.Parse(data[Constants.TimeInGame].Value);
         }
-        if (data.ContainsKey(Constants.LastVisit))
-        {
-            LastVisit = new DateTime(long.Parse(data[Constants.LastVisit].Value));
-        }
         if (data.ContainsKey(Constants.Levels))
         {
-            levelDatas = JsonHelper.FromJson<LevelDate>(data[Constants.Levels].Value).ToList();
+            var levelDatas = JsonHelper.FromJson<LevelData>(data[Constants.Levels].Value).ToList();
+            if (levelDatas.Count == 0)
+            {
+                levelDatas.Add(new LevelData());
+            }
+            for (int i = 0; i < levels.Count; i++)
+            {
+                if (i < levelDatas.Count)
+                {
+                    levels[i].data = levelDatas[i];
+                    levels[i].data.IsOpen = true;
+                }
+                else
+                {
+                    levels[i].data = null;
+                }
+            }
+
         }
     }
 

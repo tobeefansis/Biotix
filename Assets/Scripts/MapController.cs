@@ -10,28 +10,31 @@ using UnityEngine.UI;
 public class MapController : Singletone<MapController>
 {
     [SerializeField] List<Level> AllLevel = new List<Level>();
-    public List<LevelDate> levels = new List<LevelDate>();
 
     [SerializeField] Transform target;
     [SerializeField] Button ButtonPrefub;
-    
+
     public void OpenLevel(Level level)
     {
         Game.Load(level);
     }
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        AllLevel = PlayerSettings.Instance.levels;
         DontDestroyOnLoad(this);
-        levels = PlayerSettings.Instance.levelDatas;
-        for (int i = 0; i < AllLevel.Count && i < levels.Count; i++)
+        for (int i = 0; i < AllLevel.Count; i++)
         {
             var level = AllLevel[i];
             var btn = Instantiate(ButtonPrefub, target);
-            btn.onClick.AddListener(()=>OpenLevel(level));
+            btn.onClick.AddListener(() => OpenLevel(level));
             btn.GetComponentInChildren<Text>().text = (i + 1).ToString();
+            if (level.data == null || !level.data.IsOpen)
+            {
+                btn.interactable = false;
+            }
         }
     }
 
@@ -43,7 +46,7 @@ public class MapController : Singletone<MapController>
 
 }
 [System.Serializable]
-public class LevelDate
+public class LevelData
 {
     public int levelID;
     public float MinTime;

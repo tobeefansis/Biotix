@@ -13,6 +13,7 @@ public class Level : ScriptableObject
     [SerializeField] List<string> enemys = new List<string>();
     [SerializeField] string player;
 
+    public LevelData data;
     public NodeGroupDate GetPlayer()
     {
         return JsonUtility.FromJson<NodeGroupDate>(player);

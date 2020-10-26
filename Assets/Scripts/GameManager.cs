@@ -25,6 +25,9 @@ public class GameManager : Singletone<GameManager>, IUnityAdsListener
     public void Resume() => StartCoroutine(GetAllPause(false));
 
     bool IsWin;
+
+    float time;
+
     IEnumerator GetAllPause(bool t)
     {
         FindObjectsOfType<Transform>()
@@ -43,6 +46,20 @@ public class GameManager : Singletone<GameManager>, IUnityAdsListener
             Advertisement.Show("video");
             Advertisement.AddListener(this);
         }
+        IsWin = true;
+        var settings = PlayerSettings.Instance;
+        if (settings.isLast)
+        {
+            var next = settings.levels[settings.selectLevelIndex + 1];
+            next.data = new LevelData() { IsOpen = true};
+            Debug.LogError("ADD lEVEL");
+        }
+        var t = Time.time - time;
+        if (settings.selectLevel.data.MinTime > t)
+        {
+            settings.selectLevel.data.MinTime = t;
+        }
+        settings.Save();
         OnWin.Invoke();
     }
 
@@ -65,6 +82,7 @@ public class GameManager : Singletone<GameManager>, IUnityAdsListener
         {
             Advertisement.Show("video");
         }
+        IsWin = false;
         OnLose.Invoke();
     }
 
@@ -76,6 +94,7 @@ public class GameManager : Singletone<GameManager>, IUnityAdsListener
         {
             Advertisement.Initialize("3874383", false);
         }
+        time = Time.time;
     }
 
     public void OnUnityAdsReady(string placementId)
@@ -109,8 +128,7 @@ public class GameManager : Singletone<GameManager>, IUnityAdsListener
             default:
                 break;
         }
-
-        Win.Load(new GameResult() { IsWin = IsWin });
+        Win.Load(new GameResult() { IsWin = IsWin, GameTime = Mathf.RoundToInt(Time.time - time) });
     }
 
     public struct GameResult

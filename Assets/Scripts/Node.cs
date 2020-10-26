@@ -32,6 +32,7 @@ public class Node : MonoBehaviour, IComparable<Node>, IPointerEnterHandler, IPoi
         }
     }
 
+ 
     public NodeGroup Group
     {
         get => group;
